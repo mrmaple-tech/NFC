@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rankings — NFC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<script>
+/* ==========================================================================
+   EDITABLE RANKINGS DATA — update ranks/movement after every event.
+   move: "up" | "down" | "new" | null.  moveAmt: number of spots (omit for "new").
+   ========================================================================== */
+const RANKINGS = {
+  columns: [
+    {
+      label: "Pound-For-Pound",
+      top: { name:"Kon Tselios", slug:"kon-tselios", tag:null },
+      list: [
+        { name:"Thomas Strand", slug:"thomas-strand", move:null },
+        { name:"Beckham Kyling", slug:"beckham-kyling", move:null },
+        { name:"Stephen Grove", slug:"stephen-grove", move:null },
+        { name:"Austin Frie", slug:"austin-frie", move:"up", moveAmt:4 },
+        { name:"Max Klein", slug:"max-klein", move:"up", moveAmt:1 },
+        { name:"Nathan Upvall", slug:"nathan-upvall", move:"down", moveAmt:2 },
+        { name:"Ryan Ninemire", slug:"ryan-ninemire", move:"down", moveAmt:2 },
+        { name:"Ryan Long", slug:"ryan-long", move:"new" }
+      ]
+    },
+    {
+      label: "Lightweight",
+      top: { name:"Thomas Strand", slug:"thomas-strand", tag:null },
+      list: [
+        { name:"Beckham Kyling", slug:"beckham-kyling", move:null },
+        { name:"Stephen Grove", slug:"stephen-grove", move:null },
+        { name:"Max Klein", slug:"max-klein", move:"up", moveAmt:1 },
+        { name:"Ryan Ninemire", slug:"ryan-ninemire", move:"down", moveAmt:1 },
+        { name:"Ryan Long", slug:"ryan-long", move:"up", moveAmt:1 },
+        { name:"Landon Wilson", slug:"landon-wilson", move:"down", moveAmt:1 },
+        { name:"Sebastian Morales", slug:"sebastian-morales", move:null },
+        { name:"Joey Rampolla", slug:"joey-rampolla", move:null }
+      ]
+    },
+    {
+      label: "Middleweight",
+      top: { name:"Kon Tselios", slug:"kon-tselios", tag:"Champion" },
+      list: [
+        { name:"Austin Frie", slug:"austin-frie", move:"up", moveAmt:1 },
+        { name:"Nathan Upvall", slug:"nathan-upvall", move:"down", moveAmt:1 },
+        { name:"Zach Polkes", slug:"zach-polkes", move:null }
+      ]
+    }
+  ]
+};
+const NFC_SOCIALS = {
+  youtube: "https://www.youtube.com/playlist?list=PLOVVnXw7vnioi8JdVCJgEnHuXR89VmVWb",
+  tiktok: "https://www.tiktok.com/@nfc.com1",
+  instagram: "https://www.instagram.com/nfc.com1/"
+};
+</script>
+<style>
+  :root{
+    --bg:#ffffff; --bg-raised:#f4f3f1; --line:#e2e0da; --ink:#111111; --ink-dim:#68655f;
+    --red:#d20a11; --brass:#8a6a1f; --near-black:#111111; --green:#1a7d3a; box-sizing:border-box;
+  }
+  *,*::before,*::after{ box-sizing:inherit; }
+  html{ scroll-padding-top: env(safe-area-inset-top,0px); }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Archivo',system-ui,sans-serif; padding-top:env(safe-area-inset-top,0px); -webkit-font-smoothing:antialiased; padding-bottom:64px; }
+  .display{ font-family:'Anton',Impact,sans-serif; font-weight:400; letter-spacing:0.01em; line-height:0.92; }
+  a{ color:inherit; }
+  .wrap{ max-width:1240px; margin:0 auto; padding:0 24px; }
+  button{ font-family:inherit; }
+
+  header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--line); padding-top:env(safe-area-inset-top,0px); }
+  .topbar{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; height:72px; }
+  .nav-group{ display:flex; align-items:stretch; gap:4px; }
+  .nav-group.left{ justify-content:flex-start; }
+  .nav-group.right{ justify-content:flex-end; }
+  .brand{ display:flex; flex-direction:column; align-items:center; text-decoration:none; justify-self:center; }
+  .brand-word{ font-family:'Anton',sans-serif; font-size:26px; letter-spacing:0.02em; color:var(--near-black); line-height:1; }
+  .brand-underline{ width:34px; height:3px; background:var(--red); margin-top:6px; }
+  nav.primary{ display:contents; }
+  .nav-item{ position:relative; display:flex; }
+  .nav-item > a, .nav-item > button.nav-top{
+    display:flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer;
+    color:var(--near-black); text-decoration:none; font-weight:700; font-size:12.5px; letter-spacing:0.05em; text-transform:uppercase;
+    padding:0 15px; height:72px; font-family:'Archivo',sans-serif; transition:color .15s; position:relative;
+  }
+  .nav-item > a:hover, .nav-item > button.nav-top:hover, .nav-item.open > button.nav-top{ color:var(--red); }
+  .nav-item.active > a::after{ content:""; position:absolute; left:15px; right:15px; bottom:22px; height:3px; background:var(--red); }
+  .nav-top .chev{ font-size:9px; transition:transform .15s; }
+  .nav-item.open .chev{ transform:rotate(180deg); }
+  .dropdown{ position:absolute; top:72px; left:0; min-width:220px; background:#fff; border-top:3px solid var(--red); box-shadow:0 14px 24px rgba(0,0,0,0.14); padding:8px 0; display:none; z-index:60; }
+  .nav-item.open .dropdown{ display:block; }
+  .dropdown a{ display:block; padding:11px 20px; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:600; text-transform:none; letter-spacing:0; }
+  .dropdown a:hover{ background:var(--bg-raised); color:var(--red); }
+  .nav-toggle{ display:none; background:none; border:1px solid var(--line); color:var(--ink); padding:8px 10px; font-size:20px; line-height:1; justify-self:end; }
+  @media (max-width:940px){
+    .topbar{ grid-template-columns:auto 1fr auto; }
+    .brand{ justify-self:start; align-items:flex-start; }
+    nav.primary{ display:flex; position:fixed; inset:72px 0 0 0; background:#fff; flex-direction:column; gap:0; padding:8px 0 24px; transform:translateY(-8px); opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; overflow-y:auto; grid-column:1 / -1; border-top:1px solid var(--line); }
+    nav.primary.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+    .nav-group{ display:contents; }
+    .nav-item{ display:block; border-bottom:1px solid var(--line); }
+    .nav-item > a, .nav-item > button.nav-top{ height:auto; width:100%; padding:16px 24px; justify-content:space-between; }
+    .nav-item.active > a::after{ display:none; }
+    .dropdown{ position:static; box-shadow:none; border-top:none; background:var(--bg-raised); padding:0; }
+    .dropdown a{ padding:12px 40px; border-top:1px solid var(--line); }
+    .nav-toggle{ display:block; }
+  }
+
+  .page-head{ padding:40px 0 8px; }
+  .page-title{ font-size:clamp(30px,5vw,46px); text-transform:uppercase; }
+
+  .rank-columns{ display:grid; grid-template-columns:repeat(3,1fr); gap:40px; padding:32px 0 56px; align-items:start; }
+  @media (max-width:900px){ .rank-columns{ grid-template-columns:1fr; gap:0; } }
+
+  .rank-col{ border-top:3px solid var(--line); padding-top:18px; }
+  @media (max-width:900px){ .rank-col{ padding:32px 0; border-top:1px solid var(--line); } .rank-col:first-child{ border-top:none; } }
+
+  .col-label{ font-size:12px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--red); margin-bottom:6px; }
+  .col-top-name{ font-size:22px; font-weight:800; text-transform:uppercase; text-decoration:none; display:block; margin-bottom:6px; }
+  .col-top-name:hover{ color:var(--red); }
+  .col-top-tag{ display:inline-block; background:var(--brass); color:#1a1a1a; font-size:10.5px; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; padding:3px 9px; margin-bottom:16px; }
+  .col-top-avatar{ width:100%; aspect-ratio:4/3; background:var(--near-black); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Anton',sans-serif; font-size:44px; margin-bottom:18px; }
+
+  .contender-row{ display:flex; align-items:center; gap:14px; padding:13px 0; border-top:1px solid var(--line); }
+  .contender-num{ font-family:'Anton',sans-serif; font-size:17px; color:var(--ink-dim); width:20px; flex:none; }
+  .contender-name{ flex:1; font-size:14.5px; font-weight:700; text-decoration:none; color:var(--ink); }
+  .contender-name:hover{ color:var(--red); }
+  .move{ font-size:12px; font-weight:800; display:flex; align-items:center; gap:2px; flex:none; }
+  .move.up{ color:var(--green); }
+  .move.down{ color:var(--red); }
+  .move.new{ color:var(--brass); font-size:10px; letter-spacing:0.04em; text-transform:uppercase; }
+
+  footer{ padding:40px 0 calc(40px + env(safe-area-inset-bottom,0px)); background:var(--near-black); margin-top:0; }
+  .footer-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+  .social-links{ display:flex; gap:22px; }
+  .social-links a{ text-decoration:none; font-size:13px; font-weight:700; letter-spacing:0.04em; color:#b8b5af; }
+  .social-links a:hover{ color:var(--red); }
+  .footer-note{ font-size:12.5px; color:#7c7972; margin-top:18px; }
+  footer .brand-word{ color:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap topbar">
+    <nav class="primary" id="primaryNav">
+      <div class="nav-group left">
+        <div class="nav-item"><a href="schedule.html">Events</a></div>
+        <div class="nav-item active"><a href="rankings.html">Rankings</a></div>
+        <div class="nav-item"><a href="fighters.html">Fighters</a></div>
+      </div>
+      <a class="brand" href="index.html">
+        <span class="brand-word">NFC</span>
+        <span class="brand-underline"></span>
+      </a>
+      <div class="nav-group right">
+        <div class="nav-item"><a href="rules.html">Rules</a></div>
+        <div class="nav-item"><a href="referees.html">Referees</a></div>
+        <div class="nav-item">
+          <button class="nav-top" data-dd="connect">Connect <span class="chev">▾</span></button>
+          <div class="dropdown">
+            <a id="ddYoutube" href="#" target="_blank" rel="noopener">YouTube</a>
+            <a id="ddTiktok" href="#" target="_blank" rel="noopener">TikTok</a>
+            <a id="ddInstagram" href="#" target="_blank" rel="noopener">Instagram</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1 class="page-title display">NFC Rankings</h1>
+    </div>
+    <div class="rank-columns" id="rankColumns"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-row">
+      <div class="brand-word display" style="font-size:20px;">NFC</div>
+      <div class="social-links">
+        <a id="socialYoutube" href="#" target="_blank" rel="noopener">YOUTUBE</a>
+        <a id="socialTiktok" href="#" target="_blank" rel="noopener">TIKTOK</a>
+        <a id="socialInstagram" href="#" target="_blank" rel="noopener">INSTAGRAM</a>
+      </div>
+    </div>
+    <div class="footer-note">Contact the Commissioner for any questions.</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('navToggle').addEventListener('click', function(){
+    document.getElementById('primaryNav').classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-top').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const item = btn.closest('.nav-item');
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-item.open').forEach(i=>i.classList.remove('open'));
+      if(!wasOpen) item.classList.add('open');
+    });
+  });
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.nav-item')){
+      document.querySelectorAll('.nav-item.open').forEach(i=>i.classList.remove('open'));
+    }
+  });
+  ['socialYoutube','ddYoutube'].forEach(id=>document.getElementById(id).href = NFC_SOCIALS.youtube);
+  ['socialTiktok','ddTiktok'].forEach(id=>document.getElementById(id).href = NFC_SOCIALS.tiktok);
+  ['socialInstagram','ddInstagram'].forEach(id=>document.getElementById(id).href = NFC_SOCIALS.instagram);
+
+  function initials(name){ return name.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase(); }
+
+  function moveHtml(m, amt){
+    if(m === 'up') return `<span class="move up">▲ ${amt}</span>`;
+    if(m === 'down') return `<span class="move down">▼ ${amt}</span>`;
+    if(m === 'new') return `<span class="move new">New</span>`;
+    return '';
+  }
+
+  const colsEl = document.getElementById('rankColumns');
+  RANKINGS.columns.forEach(col=>{
+    const colEl = document.createElement('div');
+    colEl.className = 'rank-col';
+    colEl.innerHTML = `
+      <div class="col-label">${col.label}</div>
+      <a class="col-top-name display" href="fighters/${col.top.slug}.html">${col.top.name}</a>
+      ${col.top.tag ? `<div class="col-top-tag">${col.top.tag}</div>` : '<div style="margin-bottom:10px;"></div>'}
+      <a class="col-top-avatar display" href="fighters/${col.top.slug}.html" style="text-decoration:none;">${initials(col.top.name)}</a>
+      <div class="contender-list"></div>
+    `;
+    const listEl = colEl.querySelector('.contender-list');
+    col.list.forEach((c,i)=>{
+      const row = document.createElement('div');
+      row.className = 'contender-row';
+      row.innerHTML = `
+        <div class="contender-num display">${i+1}</div>
+        <a class="contender-name" href="fighters/${c.slug}.html">${c.name}</a>
+        ${moveHtml(c.move, c.moveAmt)}
+      `;
+      listEl.appendChild(row);
+    });
+    colsEl.appendChild(colEl);
+  });
+</script>
+
+</body>
+</html>

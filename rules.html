@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rules — NFC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --bg-raised:#f4f3f1; --line:#e2e0da; --ink:#111111; --ink-dim:#68655f;
+    --red:#d20a11; --brass:#8a6a1f; --near-black:#111111; box-sizing:border-box;
+  }
+  *,*::before,*::after{ box-sizing:inherit; }
+  html{ scroll-padding-top: env(safe-area-inset-top,0px); }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Archivo',system-ui,sans-serif; padding-top:env(safe-area-inset-top,0px); -webkit-font-smoothing:antialiased; padding-bottom:64px; }
+  .display{ font-family:'Anton',Impact,sans-serif; font-weight:400; letter-spacing:0.01em; line-height:0.92; }
+  a{ color:inherit; }
+  .wrap{ max-width:1000px; margin:0 auto; padding:0 24px; }
+  button{ font-family:inherit; }
+
+  header{ position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--line); padding-top:env(safe-area-inset-top,0px); }
+  .topbar{ max-width:1240px; margin:0 auto; padding:0 24px; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; height:72px; }
+  .nav-group{ display:flex; align-items:stretch; gap:4px; }
+  .nav-group.left{ justify-content:flex-start; }
+  .nav-group.right{ justify-content:flex-end; }
+  .brand{ display:flex; flex-direction:column; align-items:center; text-decoration:none; justify-self:center; }
+  .brand-word{ font-family:'Anton',sans-serif; font-size:26px; letter-spacing:0.02em; color:var(--near-black); line-height:1; }
+  .brand-underline{ width:34px; height:3px; background:var(--red); margin-top:6px; }
+  nav.primary{ display:contents; }
+  .nav-item{ position:relative; display:flex; }
+  .nav-item > a, .nav-item > button.nav-top{
+    display:flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer;
+    color:var(--near-black); text-decoration:none; font-weight:700; font-size:12.5px; letter-spacing:0.05em; text-transform:uppercase;
+    padding:0 15px; height:72px; font-family:'Archivo',sans-serif; transition:color .15s; position:relative;
+  }
+  .nav-item > a:hover, .nav-item > button.nav-top:hover, .nav-item.open > button.nav-top{ color:var(--red); }
+  .nav-item.active > a::after{ content:""; position:absolute; left:15px; right:15px; bottom:22px; height:3px; background:var(--red); }
+  .nav-top .chev{ font-size:9px; transition:transform .15s; }
+  .nav-item.open .chev{ transform:rotate(180deg); }
+  .dropdown{ position:absolute; top:72px; left:0; min-width:220px; background:#fff; border-top:3px solid var(--red); box-shadow:0 14px 24px rgba(0,0,0,0.14); padding:8px 0; display:none; z-index:60; }
+  .nav-item.open .dropdown{ display:block; }
+  .dropdown a{ display:block; padding:11px 20px; text-decoration:none; color:var(--ink); font-size:13.5px; font-weight:600; text-transform:none; letter-spacing:0; }
+  .dropdown a:hover{ background:var(--bg-raised); color:var(--red); }
+  .nav-toggle{ display:none; background:none; border:1px solid var(--line); color:var(--ink); padding:8px 10px; font-size:20px; line-height:1; justify-self:end; }
+  @media (max-width:940px){
+    .topbar{ grid-template-columns:auto 1fr auto; }
+    .brand{ justify-self:start; align-items:flex-start; }
+    nav.primary{ display:flex; position:fixed; inset:72px 0 0 0; background:#fff; flex-direction:column; gap:0; padding:8px 0 24px; transform:translateY(-8px); opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; overflow-y:auto; grid-column:1 / -1; border-top:1px solid var(--line); }
+    nav.primary.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+    .nav-group{ display:contents; }
+    .nav-item{ display:block; border-bottom:1px solid var(--line); }
+    .nav-item > a, .nav-item > button.nav-top{ height:auto; width:100%; padding:16px 24px; justify-content:space-between; }
+    .nav-item.active > a::after{ display:none; }
+    .dropdown{ position:static; box-shadow:none; border-top:none; background:var(--bg-raised); padding:0; }
+    .dropdown a{ padding:12px 40px; border-top:1px solid var(--line); }
+    .nav-toggle{ display:block; }
+  }
+
+  .page-head{ padding:40px 0 8px; }
+  .page-title{ font-size:clamp(30px,5vw,46px); text-transform:uppercase; }
+
+  .rule{ display:grid; grid-template-columns:56px 1fr; gap:22px; padding:32px 0; border-top:1px solid var(--line); }
+  .rule:first-of-type{ margin-top:28px; }
+  .rule-num{ font-family:'Anton',sans-serif; font-size:40px; color:var(--brass); line-height:1; }
+  .rule-title{ font-size:19px; font-weight:800; text-transform:uppercase; margin-bottom:10px; }
+  .rule ul{ margin:0; padding-left:18px; color:var(--ink-dim); font-size:14.5px; line-height:1.8; }
+  .rule p{ margin:0; color:var(--ink-dim); font-size:14.5px; line-height:1.7; }
+
+  footer{ padding:40px 0 calc(40px + env(safe-area-inset-bottom,0px)); background:var(--near-black); margin-top:20px; }
+  .footer-row{ max-width:1240px; margin:0 auto; padding:0 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+  .social-links{ display:flex; gap:22px; }
+  .social-links a{ text-decoration:none; font-size:13px; font-weight:700; letter-spacing:0.04em; color:#b8b5af; }
+  .social-links a:hover{ color:var(--red); }
+  .footer-note{ max-width:1240px; margin:0 auto; padding:0 24px; font-size:12.5px; color:#7c7972; margin-top:18px; }
+  footer .brand-word{ color:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <nav class="primary" id="primaryNav">
+      <div class="nav-group left">
+        <div class="nav-item"><a href="schedule.html">Events</a></div>
+        <div class="nav-item"><a href="rankings.html">Rankings</a></div>
+        <div class="nav-item"><a href="fighters.html">Fighters</a></div>
+      </div>
+      <a class="brand" href="index.html">
+        <span class="brand-word">NFC</span>
+        <span class="brand-underline"></span>
+      </a>
+      <div class="nav-group right">
+        <div class="nav-item active"><a href="rules.html">Rules</a></div>
+        <div class="nav-item"><a href="referees.html">Referees</a></div>
+        <div class="nav-item">
+          <button class="nav-top" data-dd="connect">Connect <span class="chev">▾</span></button>
+          <div class="dropdown">
+            <a id="ddYoutube" href="#" target="_blank" rel="noopener">YouTube</a>
+            <a id="ddTiktok" href="#" target="_blank" rel="noopener">TikTok</a>
+            <a id="ddInstagram" href="#" target="_blank" rel="noopener">Instagram</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1 class="page-title display">Rules</h1>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num display">1</div>
+      <div>
+        <div class="rule-title">Tap = Instant Stop</div>
+        <p>If a fighter taps — hand, foot, or verbal — the match is over immediately.</p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num display">2</div>
+      <div>
+        <div class="rule-title">The Referee Has Full Control</div>
+        <ul>
+          <li>Can start and stop the fight</li>
+          <li>Can pause the action at any time</li>
+          <li>Calls submissions and stoppages</li>
+          <li>Separates fighters when needed</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num display">3</div>
+      <div>
+        <div class="rule-title">Round System</div>
+        <p>Every bout runs three two-minute rounds.</p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num display">4</div>
+      <div>
+        <div class="rule-title">Illegal Actions</div>
+        <ul>
+          <li>Slams (that aren't on couches)</li>
+          <li>Eye gouging</li>
+          <li>Any striking</li>
+          <li>Small joint manipulation (fingers/toes)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule">
+      <div class="rule-num display">5</div>
+      <div>
+        <div class="rule-title">Stoppages — How A Fight Is Won Or Lost</div>
+        <ul>
+          <li>TKO — if a fighter is not intelligently defending themselves</li>
+          <li>Submission</li>
+          <li>Decision — after 3 rounds, the judges decide</li>
+          <li>Disqualification — for performing illegal actions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-row">
+    <div class="brand-word display" style="font-size:20px;">NFC</div>
+    <div class="social-links">
+      <a id="socialYoutube" href="#" target="_blank" rel="noopener">YOUTUBE</a>
+      <a id="socialTiktok" href="#" target="_blank" rel="noopener">TIKTOK</a>
+      <a id="socialInstagram" href="#" target="_blank" rel="noopener">INSTAGRAM</a>
+    </div>
+  </div>
+  <div class="footer-note">Contact the Commissioner for any questions.</div>
+</footer>
+
+<script>
+  document.getElementById('navToggle').addEventListener('click', function(){
+    document.getElementById('primaryNav').classList.toggle('open');
+  });
+  document.querySelectorAll('.nav-top').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const item = btn.closest('.nav-item');
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.nav-item.open').forEach(i=>i.classList.remove('open'));
+      if(!wasOpen) item.classList.add('open');
+    });
+  });
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.nav-item')){
+      document.querySelectorAll('.nav-item.open').forEach(i=>i.classList.remove('open'));
+    }
+  });
+  const SOCIALS = {
+    youtube: "https://www.youtube.com/playlist?list=PLOVVnXw7vnioi8JdVCJgEnHuXR89VmVWb",
+    tiktok: "https://www.tiktok.com/@nfc.com1",
+    instagram: "https://www.instagram.com/nfc.com1/"
+  };
+  ['socialYoutube','ddYoutube'].forEach(id=>document.getElementById(id).href = SOCIALS.youtube);
+  ['socialTiktok','ddTiktok'].forEach(id=>document.getElementById(id).href = SOCIALS.tiktok);
+  ['socialInstagram','ddInstagram'].forEach(id=>document.getElementById(id).href = SOCIALS.instagram);
+</script>
+
+</body>
+</html>
