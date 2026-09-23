@@ -55,8 +55,13 @@
   .hero{ background:var(--near-black); color:#fff; padding:48px 0; }
   .tag-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px; }
   .tag{ background:#232323; border:1px solid #333; padding:5px 12px; font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:#d7d5d0; }
-  .avatar-lg{ width:120px; height:120px; border-radius:50%; background:var(--red); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Anton',sans-serif; font-size:40px; margin-bottom:22px; overflow:hidden; }
-  .avatar-lg img{ width:100%; height:100%; object-fit:cover; }
+  .avatar-lg{ display:none; }
+  .ref-hero-grid{ display:grid; grid-template-columns:1fr auto; align-items:center; gap:48px; }
+  .avatar-xl{ width:300px; height:380px; background:var(--red); overflow:hidden; flex:none; }
+  .avatar-xl img{ width:100%; height:100%; object-fit:cover; object-position:top center; }
+  @media (max-width:1100px){ .avatar-xl{ width:240px; height:320px; } }
+  @media (max-width:900px){ .ref-hero-grid{ grid-template-columns:minmax(0,1fr); } }
+  @media (max-width:900px){ .avatar-xl{ order:-1; width:100%; height:320px; margin-bottom:24px; } }
   .nickname-lg{ font-size:15px; color:#9c9992; font-style:italic; margin-bottom:6px; }
   .name-lg{ font-size:clamp(36px,6vw,60px); text-transform:uppercase; margin-bottom:20px; }
   .stat-trio{ display:flex; gap:36px; flex-wrap:wrap; }
@@ -142,14 +147,18 @@
 
 <section class="hero">
   <div class="wrap">
-    <div class="tag-row"><span class="tag">Referee</span><span class="tag">Active</span></div>
-    <div class="avatar-lg display"><img src="ref-stephen.jpg" alt=""></div>
-    <div class="nickname-lg">"If He Dies He Dies"</div>
+    <div class="ref-hero-grid">
+      <div>
+        <div class="tag-row"><span class="tag">Referee</span><span class="tag">Active</span></div>
+        <div class="nickname-lg">"If He Dies He Dies"</div>
     <h1 class="name-lg display">Stephen Grove</h1>
     <div class="stat-trio">
       <div><div class="stat-num display">1</div><div class="stat-label">Fights<br>Officiated</div></div>
       <div><div class="stat-num display">Cap&#39;n Crunch</div><div class="stat-label">Favorite<br>Snack</div></div>
       <div><div class="stat-num display">Diddy Choke</div><div class="stat-label">Favorite<br>Submission</div></div>
+    </div>
+      </div>
+      <div class="avatar-xl display"><img src="ref-stephen.jpg" alt=""></div>
     </div>
   </div>
 </section>

@@ -296,7 +296,7 @@ const NFC_SOCIALS = {
     colEl.innerHTML = `
       <div class="col-label">${col.label}</div>
       <a class="col-top-name display" href="${col.top.slug}.html">${col.top.name}</a>
-      ${col.top.tag ? `<div class="col-top-tag">${col.top.tag}</div>` : '<div style="margin-bottom:10px;"></div>'}
+      <div class="col-top-tag"${col.top.tag ? '' : ' style="visibility:hidden;"'}>${col.top.tag || 'Champion'}</div>
       <a class="col-top-avatar display" href="${col.top.slug}.html" style="text-decoration:none;">${topAvatarHtml(col.top)}</a>
       <div class="contender-list"></div>
     `;
