@@ -9,8 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <script>
 const REFEREES = [
-  { name:"Thomas Strand", slug:"ref-thomas", nickname:"To The Death", officiated:8, photo:"images/referees/ref-thomas.jpg" },
-  { name:"Stephen Grove", slug:"ref-stephen", nickname:"If He Dies He Dies", officiated:1, photo:"images/referees/ref-stephen.jpg" }
+  { name:"Thomas Strand", slug:"ref-thomas", nickname:"To The Death", officiated:8, photo:"ref-thomas.jpg" },
+  { name:"Stephen Grove", slug:"ref-stephen", nickname:"If He Dies He Dies", officiated:1, photo:"ref-stephen.jpg" }
 ];
 const NFC_SOCIALS = {
   youtube: "https://www.youtube.com/playlist?list=PLOVVnXw7vnioi8JdVCJgEnHuXR89VmVWb",
@@ -153,7 +153,7 @@ const NFC_SOCIALS = {
         <div class="nav-item"><a href="rankings.html">Rankings</a></div>
         <div class="nav-item"><a href="fighters.html">Athletes</a></div>
       </div>
-      <a class="brand" href="index.html"><img src="images/nfc-logo.png" alt="NFC" class="brand-logo"></a>
+      <a class="brand" href="index.html"><img src="nfc-logo.png" alt="NFC" class="brand-logo"></a>
       <div class="nav-group right">
         <div class="nav-item"><a href="rules.html">Rules</a></div>
         <div class="nav-item active"><a href="referees.html">Referees</a></div>
@@ -236,13 +236,13 @@ const NFC_SOCIALS = {
     const row = document.createElement('div');
     row.className = 'ref-row';
     row.innerHTML = `
-      <a class="photo-link" href="referees/${r.slug}.html"><div class="avatar">${r.photo ? `<img src="${r.photo}" alt="${r.name}">` : initials(r.name)}</div></a>
+      <a class="photo-link" href="${r.slug}.html"><div class="avatar">${r.photo ? `<img src="${r.photo}" alt="${r.name}">` : initials(r.name)}</div></a>
       <div class="ref-main">
         <div class="nickname">"${r.nickname}"</div>
-        <a class="fname display" href="referees/${r.slug}.html">${r.name}</a>
+        <a class="fname display" href="${r.slug}.html">${r.name}</a>
         <div class="officiated">Fights Officiated: ${r.officiated}</div>
       </div>
-      <a class="btn-outline" href="referees/${r.slug}.html">View Profile</a>
+      <a class="btn-outline" href="${r.slug}.html">View Profile</a>
     `;
     listEl.appendChild(row);
   });

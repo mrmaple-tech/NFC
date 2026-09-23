@@ -196,7 +196,7 @@ const NFC_SOCIALS = {
         <div class="nav-item active"><a href="rankings.html">Rankings</a></div>
         <div class="nav-item"><a href="fighters.html">Athletes</a></div>
       </div>
-      <a class="brand" href="index.html"><img src="images/nfc-logo.png" alt="NFC" class="brand-logo"></a>
+      <a class="brand" href="index.html"><img src="nfc-logo.png" alt="NFC" class="brand-logo"></a>
       <div class="nav-group right">
         <div class="nav-item"><a href="rules.html">Rules</a></div>
         <div class="nav-item"><a href="referees.html">Referees</a></div>
@@ -277,7 +277,7 @@ const NFC_SOCIALS = {
   const NO_PHOTO_SLUGS = new Set([]);
   function topAvatarHtml(top){
     if(top.slug && !NO_PHOTO_SLUGS.has(top.slug)){
-      return `<img src="images/fighters/${top.slug}.jpg" alt="${top.name}">`;
+      return `<img src="${top.slug}.jpg" alt="${top.name}">`;
     }
     return initials(top.name);
   }
@@ -295,9 +295,9 @@ const NFC_SOCIALS = {
     colEl.className = 'rank-col';
     colEl.innerHTML = `
       <div class="col-label">${col.label}</div>
-      <a class="col-top-name display" href="fighters/${col.top.slug}.html">${col.top.name}</a>
+      <a class="col-top-name display" href="${col.top.slug}.html">${col.top.name}</a>
       ${col.top.tag ? `<div class="col-top-tag">${col.top.tag}</div>` : '<div style="margin-bottom:10px;"></div>'}
-      <a class="col-top-avatar display" href="fighters/${col.top.slug}.html" style="text-decoration:none;">${topAvatarHtml(col.top)}</a>
+      <a class="col-top-avatar display" href="${col.top.slug}.html" style="text-decoration:none;">${topAvatarHtml(col.top)}</a>
       <div class="contender-list"></div>
     `;
     const listEl = colEl.querySelector('.contender-list');
@@ -306,7 +306,7 @@ const NFC_SOCIALS = {
       row.className = 'contender-row';
       row.innerHTML = `
         <div class="contender-num display">${i+1}</div>
-        <a class="contender-name" href="fighters/${c.slug}.html">${c.name}</a>
+        <a class="contender-name" href="${c.slug}.html">${c.name}</a>
         ${moveHtml(c.move, c.moveAmt)}
       `;
       listEl.appendChild(row);

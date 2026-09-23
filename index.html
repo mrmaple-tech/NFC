@@ -256,7 +256,7 @@ const NFC_DATA = {
         </div>
       </div>
 
-      <a class="brand" href="index.html"><img src="images/nfc-logo.png" alt="NFC" class="brand-logo"></a>
+      <a class="brand" href="index.html"><img src="nfc-logo.png" alt="NFC" class="brand-logo"></a>
 
       <div class="nav-group right">
         <div class="nav-item"><a href="rules.html">Rules</a></div>
@@ -414,9 +414,9 @@ const NFC_DATA = {
   (function(){
     const d = NFC_DATA;
     document.getElementById('nameA').textContent = d.fighterA.name;
-    document.getElementById('nameA').href = 'fighters/' + d.fighterA.slug + '.html';
+    document.getElementById('nameA').href = '' + d.fighterA.slug + '.html';
     document.getElementById('nameB').textContent = d.fighterB.name;
-    document.getElementById('nameB').href = 'fighters/' + d.fighterB.slug + '.html';
+    document.getElementById('nameB').href = '' + d.fighterB.slug + '.html';
     document.getElementById('eventNumber').textContent = d.eventNumber;
     document.getElementById('eventTitle').textContent = d.eventTitle;
     document.getElementById('ctaHeadline').textContent = d.fighterA.name.split(' ').pop() + ' vs ' + d.fighterB.name.split(' ').pop();
@@ -437,7 +437,7 @@ const NFC_DATA = {
       row.className = 'rank-row';
       row.innerHTML =
         '<div class="rank-num display">'+f.rank+'</div>'+
-        '<div><a class="rank-name" href="fighters/'+f.slug+'.html" style="text-decoration:none;color:inherit;">'+f.name+'</a><div class="rank-note">'+f.note+'</div></div>'+
+        '<div><a class="rank-name" href="'+f.slug+'.html" style="text-decoration:none;color:inherit;">'+f.name+'</a><div class="rank-note">'+f.note+'</div></div>'+
         '<div class="rank-record">'+f.record+'</div>';
       p4p.appendChild(row);
     });

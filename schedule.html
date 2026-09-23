@@ -242,7 +242,7 @@ const NFC_SOCIALS = {
           </div>
         </div>
       </div>
-      <a class="brand" href="index.html"><img src="images/nfc-logo.png" alt="NFC" class="brand-logo"></a>
+      <a class="brand" href="index.html"><img src="nfc-logo.png" alt="NFC" class="brand-logo"></a>
       <div class="nav-group right">
         <div class="nav-item"><a href="rules.html">Rules</a></div>
         <div class="nav-item"><a href="referees.html">Referees</a></div>
@@ -354,8 +354,8 @@ const NFC_SOCIALS = {
 
   function renderActions(bout){
     return `
-      <a class="btn-outline" href="fighters/${bout.a.slug}.html">${bout.a.name}</a>
-      <a class="btn-outline" href="fighters/${bout.b.slug}.html">${bout.b.name}</a>
+      <a class="btn-outline" href="${bout.a.slug}.html">${bout.a.name}</a>
+      <a class="btn-outline" href="${bout.b.slug}.html">${bout.b.name}</a>
     `;
   }
 

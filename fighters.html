@@ -189,7 +189,7 @@ const NFC_SOCIALS = {
         <div class="nav-item"><a href="rankings.html">Rankings</a></div>
         <div class="nav-item active"><a href="fighters.html">Athletes</a></div>
       </div>
-      <a class="brand" href="index.html"><img src="images/nfc-logo.png" alt="NFC" class="brand-logo"></a>
+      <a class="brand" href="index.html"><img src="nfc-logo.png" alt="NFC" class="brand-logo"></a>
       <div class="nav-group right">
         <div class="nav-item"><a href="rules.html">Rules</a></div>
         <div class="nav-item"><a href="referees.html">Referees</a></div>
@@ -284,17 +284,17 @@ const NFC_SOCIALS = {
     row.className = 'fighter-row';
     row.innerHTML = `
       <div class="row-division"><b>${f.division}</b>${f.weightClass}</div>
-      <a class="photo-link" href="fighters/${f.slug}.html">
-        <div class="avatar">${f.photo ? `<img src="images/fighters/${f.slug}.jpg" alt="${f.name}">` : initials(f.name)}</div>
+      <a class="photo-link" href="${f.slug}.html">
+        <div class="avatar">${f.photo ? `<img src="${f.slug}.jpg" alt="${f.name}">` : initials(f.name)}</div>
       </a>
       <div class="row-main">
         <div class="nickname">"${f.nickname}"</div>
-        <a class="fname display" href="fighters/${f.slug}.html">${f.name}</a>
+        <a class="fname display" href="${f.slug}.html">${f.name}</a>
         <div class="record">${f.record} [W-L-D]</div>
         <div class="last-fight"><b>Last Fight:</b> ${f.lastFight}</div>
       </div>
       <div class="row-action">
-        <a class="btn-outline" href="fighters/${f.slug}.html">View Profile</a>
+        <a class="btn-outline" href="${f.slug}.html">View Profile</a>
       </div>
     `;
     listEl.appendChild(row);
