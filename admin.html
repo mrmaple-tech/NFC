@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — NFC</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff; --bg-raised:#f4f3f1; --line:#e2e0da; --ink:#111111; --ink-dim:#68655f;
+    --red:#d20a11; --brass:#8a6a1f; --near-black:#111111; --green:#1a7d3a; box-sizing:border-box;
+  }
+  *,*::before,*::after{ box-sizing:inherit; }
+  html{ overflow-x:hidden; max-width:100%; }
+  body{ margin:0; background:var(--bg-raised); color:var(--ink); font-family:'Archivo',system-ui,sans-serif; -webkit-font-smoothing:antialiased; min-height:100vh; }
+  .display{ font-family:'Anton',Impact,sans-serif; font-weight:400; letter-spacing:0.01em; line-height:0.92; }
+  a{ color:var(--red); }
+  button, input, select, textarea{ font-family:inherit; }
+
+  .bar{ background:var(--near-black); color:#fff; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .bar-brand{ display:flex; align-items:center; gap:10px; }
+  .bar-brand img{ height:24px; display:block; }
+  .bar-title{ font-family:'Anton',sans-serif; font-size:15px; letter-spacing:0.03em; text-transform:uppercase; color:#b8b5af; }
+  .bar-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .bar a.ghost{ color:#b8b5af; text-decoration:none; font-size:12.5px; font-weight:700; letter-spacing:0.03em; text-transform:uppercase; }
+  .bar a.ghost:hover{ color:#fff; }
+
+  .shell{ max-width:920px; margin:0 auto; padding:40px 20px 80px; }
+  .card{ background:#fff; border:1px solid var(--line); border-top:4px solid var(--red); padding:28px 26px; margin-bottom:24px; }
+  .card h1{ font-size:clamp(24px,4vw,32px); text-transform:uppercase; margin:0 0 6px; }
+  .card h2{ font-size:16px; text-transform:uppercase; margin:0 0 14px; letter-spacing:0.02em; }
+  .card p.lede{ color:var(--ink-dim); font-size:14.5px; line-height:1.6; margin:0 0 22px; }
+  label{ display:block; font-size:11.5px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 6px; }
+  input[type=password], input[type=text]{
+    width:100%; padding:12px 14px; border:1.5px solid var(--line); font-size:14.5px; margin-bottom:16px; background:#fff; color:var(--ink);
+  }
+  input:focus, select:focus, textarea:focus{ outline:none; border-color:var(--near-black); }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:600px){ .row2{ grid-template-columns:1fr; } }
+  .btn{ font-size:12.5px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; text-decoration:none; padding:14px 24px; display:inline-block; text-align:center; border:none; cursor:pointer; }
+  .btn-solid{ background:var(--near-black); color:#fff; }
+  .btn-solid:hover{ background:var(--red); }
+  .btn-solid:disabled{ background:#c7c4bd; cursor:not-allowed; }
+  .btn-outline{ background:#fff; color:var(--near-black); border:1.5px solid var(--near-black); }
+  .btn-outline:hover{ border-color:var(--red); color:var(--red); }
+  .btn-danger{ background:#fff; color:var(--red); border:1.5px solid var(--red); }
+  .btn-danger:hover{ background:var(--red); color:#fff; }
+
+  .help{ background:var(--bg-raised); border:1px solid var(--line); padding:16px 18px; font-size:13px; color:var(--ink-dim); line-height:1.7; margin-bottom:16px; }
+  .help ol{ margin:8px 0 0; padding-left:20px; }
+  .help code{ background:#fff; border:1px solid var(--line); padding:1px 6px; font-size:12px; }
+  .warn{ background:#fdf1ea; border:1px solid #e8c9a8; color:#7a4a10; padding:14px 16px; font-size:13px; line-height:1.6; margin-bottom:20px; }
+
+  select{ width:100%; padding:12px 14px; border:1.5px solid var(--line); font-size:14.5px; margin-bottom:18px; background:#fff; color:var(--ink); }
+  textarea{
+    width:100%; min-height:420px; padding:16px; border:1.5px solid var(--line); font-family:'SFMono-Regular',Consolas,Menlo,monospace;
+    font-size:13px; line-height:1.6; color:var(--ink); resize:vertical; tab-size:2; white-space:pre; background:#fdfdfc;
+  }
+  .editor-actions{ display:flex; gap:10px; align-items:center; margin-top:16px; flex-wrap:wrap; }
+  .status{ font-size:13px; font-weight:700; padding:8px 0; }
+  .status.ok{ color:var(--green); }
+  .status.err{ color:var(--red); }
+  .status.pending{ color:var(--ink-dim); }
+
+  #gate{ position:fixed; inset:0; background:var(--near-black); display:flex; align-items:center; justify-content:center; z-index:999; padding:20px; }
+  #gate .card{ max-width:380px; width:100%; margin:0; }
+  #gate .brand-word{ font-family:'Anton',sans-serif; font-size:28px; text-align:center; display:block; margin-bottom:18px; }
+
+  [hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="card">
+    <span class="brand-word display">NFC ADMIN</span>
+    <label for="passcodeInput">Passcode</label>
+    <input type="password" id="passcodeInput" autocomplete="off" placeholder="Enter passcode">
+    <div id="gateError" class="status err" hidden>Wrong passcode.</div>
+    <button class="btn btn-solid" id="gateSubmit" style="width:100%;margin-top:6px;">Enter</button>
+    <p style="font-size:12px;color:#9c9992;margin-top:16px;line-height:1.6;">
+      This screen only keeps out casual visitors — it's a page password checked in your browser, not a real account system.
+      The actual protection is the GitHub token on the next screen, which only you should ever have.
+      Change the passcode by editing <code style="background:#232323;color:#eee;padding:1px 5px;">ADMIN_PASSCODE</code> near the top of this file's script.
+    </p>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="bar">
+    <div class="bar-brand">
+      <img src="nfc-logo.png" alt="" style="filter:brightness(0) invert(1);">
+      <span class="bar-title">Admin Panel</span>
+    </div>
+    <div class="bar-actions">
+      <a class="ghost" href="index.html">View Site</a>
+      <a class="ghost" id="actionsLink" href="#" target="_blank" rel="noopener">Deployment Status</a>
+      <a class="ghost" href="#" id="logoutLink">Log Out</a>
+    </div>
+  </div>
+
+  <div class="shell">
+
+    <div class="card" id="connectCard">
+      <h2>Connect To GitHub</h2>
+      <p class="lede">This is what actually lets Save write changes to your live site. Enter a token once — it's remembered in this browser only.</p>
+
+      <div class="help">
+        <strong>First time? Create a token:</strong>
+        <ol>
+          <li>Go to <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">github.com/settings/tokens?type=beta</a> and click "Generate new token".</li>
+          <li>Under <strong>Repository access</strong>, choose "Only select repositories" and pick <code>mrmaple-tech/NFC</code>.</li>
+          <li>Under <strong>Permissions → Repository permissions</strong>, set <strong>Contents</strong> to "Read and write".</li>
+          <li>Set an expiration (90 days is reasonable — you'll just generate a new one after), then click Generate.</li>
+          <li>Copy the token (starts with <code>github_pat_</code>) and paste it below. GitHub only shows it once.</li>
+        </ol>
+      </div>
+      <div class="warn">Keep this token private — anyone who has it can edit your repo. Only paste it into this page, on a device you trust.</div>
+
+      <label for="ownerInput">Repo Owner</label>
+      <input type="text" id="ownerInput" value="mrmaple-tech">
+      <div class="row2">
+        <div>
+          <label for="repoInput">Repo Name</label>
+          <input type="text" id="repoInput" value="NFC">
+        </div>
+        <div>
+          <label for="branchInput">Branch</label>
+          <input type="text" id="branchInput" value="main">
+        </div>
+      </div>
+      <label for="tokenInput">GitHub Token</label>
+      <input type="password" id="tokenInput" autocomplete="off" placeholder="github_pat_...">
+      <button class="btn btn-solid" id="connectBtn">Connect</button>
+      <span class="status" id="connectStatus"></span>
+    </div>
+
+    <div class="card" id="editorCard" hidden>
+      <h2>Edit Site Data</h2>
+      <p class="lede">Pick what you want to update. This loads the exact same plain-English data block you'd normally hand-edit — change the values, then Save pushes it straight to the live site.</p>
+
+      <label for="fileSelect">What To Edit</label>
+      <select id="fileSelect">
+        <option value="">Select…</option>
+        <option value="index.html|NFC_DATA">Homepage — This Week's Fight (NFC_DATA)</option>
+        <option value="schedule.html|EVENTS">Schedule — All Events (EVENTS)</option>
+        <option value="rankings.html|RANKINGS">Rankings (RANKINGS)</option>
+        <option value="fighters.html|FIGHTERS">Athletes Roster (FIGHTERS)</option>
+        <option value="referees.html|REFEREES">Referees Roster (REFEREES)</option>
+      </select>
+
+      <div id="editorWrap" hidden>
+        <label id="editorLabel" for="dataTextarea">Data</label>
+        <textarea id="dataTextarea" spellcheck="false"></textarea>
+        <div class="editor-actions">
+          <button class="btn btn-solid" id="saveBtn">Save &amp; Publish</button>
+          <button class="btn btn-outline" id="reloadBtn">Reload Latest</button>
+          <span class="status" id="editStatus"></span>
+        </div>
+        <p style="font-size:12px;color:#9c9992;margin-top:14px;line-height:1.6;">
+          Keep the same shape (commas, quotes, curly/square brackets). Save checks that it's still valid before publishing.
+          After saving, GitHub rebuilds the site automatically — usually live within a minute or two. Check "Deployment Status" to watch it.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ---- change this to set your own passcode for this admin screen ----
+  const ADMIN_PASSCODE = "nfc2026";
+
+  const LS_TOKEN = 'nfc_admin_token';
+  const LS_OWNER = 'nfc_admin_owner';
+  const LS_REPO = 'nfc_admin_repo';
+  const LS_BRANCH = 'nfc_admin_branch';
+  const LS_AUTH = 'nfc_admin_authed';
+
+  const gate = document.getElementById('gate');
+  const app = document.getElementById('app');
+
+  function tryEnter(){
+    const val = document.getElementById('passcodeInput').value;
+    if(val === ADMIN_PASSCODE){
+      sessionStorage.setItem(LS_AUTH, '1');
+      gate.hidden = true;
+      app.hidden = false;
+      initConnect();
+    } else {
+      document.getElementById('gateError').hidden = false;
+    }
+  }
+  document.getElementById('gateSubmit').addEventListener('click', tryEnter);
+  document.getElementById('passcodeInput').addEventListener('keydown', e=>{ if(e.key==='Enter') tryEnter(); });
+
+  if(sessionStorage.getItem(LS_AUTH) === '1'){
+    gate.hidden = true;
+    app.hidden = false;
+  }
+
+  document.getElementById('logoutLink').addEventListener('click', function(e){
+    e.preventDefault();
+    sessionStorage.removeItem(LS_AUTH);
+    location.reload();
+  });
+
+  function setStatus(el, msg, kind){
+    el.textContent = msg;
+    el.className = 'status' + (kind ? ' '+kind : '');
+  }
+
+  function ghApiBase(){
+    const owner = document.getElementById('ownerInput').value.trim();
+    const repo = document.getElementById('repoInput').value.trim();
+    return `https://api.github.com/repos/${owner}/${repo}`;
+  }
+  function ghHeaders(){
+    const token = document.getElementById('tokenInput').value.trim();
+    return {
+      'Authorization': 'Bearer ' + token,
+      'Accept': 'application/vnd.github+json'
+    };
+  }
+
+  function initConnect(){
+    const owner = localStorage.getItem(LS_OWNER);
+    const repo = localStorage.getItem(LS_REPO);
+    const branch = localStorage.getItem(LS_BRANCH);
+    const token = localStorage.getItem(LS_TOKEN);
+    if(owner) document.getElementById('ownerInput').value = owner;
+    if(repo) document.getElementById('repoInput').value = repo;
+    if(branch) document.getElementById('branchInput').value = branch;
+    if(token) document.getElementById('tokenInput').value = token;
+
+    document.getElementById('actionsLink').href =
+      `https://github.com/${document.getElementById('ownerInput').value}/${document.getElementById('repoInput').value}/actions`;
+
+    if(token) verifyAndUnlockEditor();
+  }
+
+  async function verifyAndUnlockEditor(){
+    const statusEl = document.getElementById('connectStatus');
+    setStatus(statusEl, 'Checking access…', 'pending');
+    try{
+      const res = await fetch(ghApiBase(), { headers: ghHeaders() });
+      if(!res.ok){
+        throw new Error(res.status === 401 ? 'Token is invalid or expired.' : `Can't reach that repo (${res.status}). Check owner/repo names.`);
+      }
+      const data = await res.json();
+      if(!data.permissions || !data.permissions.push){
+        throw new Error('Token connected, but it doesn\'t have write access to this repo.');
+      }
+      setStatus(statusEl, 'Connected — ' + data.full_name, 'ok');
+      localStorage.setItem(LS_TOKEN, document.getElementById('tokenInput').value.trim());
+      localStorage.setItem(LS_OWNER, document.getElementById('ownerInput').value.trim());
+      localStorage.setItem(LS_REPO, document.getElementById('repoInput').value.trim());
+      localStorage.setItem(LS_BRANCH, document.getElementById('branchInput').value.trim());
+      document.getElementById('actionsLink').href =
+        `https://github.com/${document.getElementById('ownerInput').value}/${document.getElementById('repoInput').value}/actions`;
+      document.getElementById('editorCard').hidden = false;
+    } catch(err){
+      setStatus(statusEl, err.message, 'err');
+    }
+  }
+
+  document.getElementById('connectBtn').addEventListener('click', verifyAndUnlockEditor);
+
+  // ---- file/variable editor ----
+  let currentSha = null;
+  let currentPath = null;
+  let currentVar = null;
+  let currentFullText = null;
+  let blockStart = null;
+  let blockEnd = null;
+
+  function findBlock(fullText, varName){
+    const marker = `const ${varName} = `;
+    const start = fullText.indexOf(marker);
+    if(start === -1) return null;
+    const valueStart = start + marker.length;
+    const openChar = fullText[valueStart];
+    const closeChar = openChar === '{' ? '}' : (openChar === '[' ? ']' : null);
+    if(!closeChar) return null;
+    let depth = 0;
+    let i = valueStart;
+    for(; i < fullText.length; i++){
+      const c = fullText[i];
+      if(c === openChar) depth++;
+      else if(c === closeChar){
+        depth--;
+        if(depth === 0){ i++; break; }
+      }
+    }
+    // include a trailing semicolon if present
+    let end = i;
+    if(fullText[end] === ';') end++;
+    return { valueStart, valueEnd: end, fullStart: start, fullEnd: end };
+  }
+
+  async function loadFile(path, varName){
+    const statusEl = document.getElementById('editStatus');
+    setStatus(statusEl, 'Loading…', 'pending');
+    document.getElementById('editorWrap').hidden = true;
+    try{
+      const branch = document.getElementById('branchInput').value.trim();
+      const res = await fetch(`${ghApiBase()}/contents/${path}?ref=${encodeURIComponent(branch)}`, { headers: ghHeaders() });
+      if(!res.ok) throw new Error(`Couldn't load ${path} (${res.status}).`);
+      const data = await res.json();
+      currentSha = data.sha;
+      currentPath = path;
+      currentVar = varName;
+      currentFullText = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+      const block = findBlock(currentFullText, varName);
+      if(!block) throw new Error(`Couldn't find "${varName}" in ${path}.`);
+      blockStart = block.valueStart;
+      blockEnd = block.valueEnd;
+      const blockText = currentFullText.slice(blockStart, blockEnd).replace(/;\s*$/, '');
+      document.getElementById('dataTextarea').value = blockText;
+      document.getElementById('editorLabel').textContent = varName + '  —  ' + path;
+      document.getElementById('editorWrap').hidden = false;
+      setStatus(statusEl, 'Loaded latest version.', 'ok');
+    } catch(err){
+      setStatus(statusEl, err.message, 'err');
+    }
+  }
+
+  document.getElementById('fileSelect').addEventListener('change', function(){
+    const v = this.value;
+    if(!v) return;
+    const [path, varName] = v.split('|');
+    loadFile(path, varName);
+  });
+
+  document.getElementById('reloadBtn').addEventListener('click', function(){
+    if(currentPath && currentVar) loadFile(currentPath, currentVar);
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', async function(){
+    const statusEl = document.getElementById('editStatus');
+    const newBlock = document.getElementById('dataTextarea').value;
+
+    // validate it's parseable JS before sending anywhere
+    try{
+      new Function('return ' + newBlock)();
+    } catch(err){
+      setStatus(statusEl, 'That doesn\'t look like valid data — check for a missing comma, quote, or bracket. (' + err.message + ')', 'err');
+      return;
+    }
+
+    this.disabled = true;
+    setStatus(statusEl, 'Publishing…', 'pending');
+    try{
+      const newFullText = currentFullText.slice(0, blockStart) + newBlock + ';' + currentFullText.slice(blockEnd);
+      const branch = document.getElementById('branchInput').value.trim();
+      const b64 = btoa(unescape(encodeURIComponent(newFullText)));
+      const res = await fetch(`${ghApiBase()}/contents/${currentPath}`, {
+        method: 'PUT',
+        headers: Object.assign({'Content-Type':'application/json'}, ghHeaders()),
+        body: JSON.stringify({
+          message: `Update ${currentVar} via admin panel`,
+          content: b64,
+          sha: currentSha,
+          branch: branch
+        })
+      });
+      if(!res.ok){
+        const errBody = await res.json().catch(()=>({}));
+        throw new Error(errBody.message || `GitHub rejected the save (${res.status}).`);
+      }
+      const result = await res.json();
+      currentSha = result.content.sha;
+      currentFullText = newFullText;
+      const block = findBlock(currentFullText, currentVar);
+      blockStart = block.valueStart;
+      blockEnd = block.valueEnd;
+      setStatus(statusEl, 'Published! The live site will update in a minute or two.', 'ok');
+    } catch(err){
+      setStatus(statusEl, err.message, 'err');
+    } finally {
+      this.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
